@@ -1,0 +1,38 @@
+import requests
+import matplotlib.pyplot as plt
+
+req = requests.get("https://query1.finance.yahoo.com/v7/finance/download/CASH?period1=1634609690&period2=1666145690&interval=1d&events=history&includeAdjustedClose=true")
+url_content = req.content
+csv_file = open ('downloaded.csv', 'wb')
+csv_file.write(url_content)
+csv_file.close()
+
+req = requests.get("https://query1.finance.yahoo.com/v7/finance/download/VMBS?period1=1634610394&period2=1666146394&interval=1d&events=history&includeAdjustedClose=true")
+url_content = req.content
+csv_file = open ('downloaded.csv', 'wb')
+csv_file.write(url_content)
+csv_file.close()
+
+import pandas as pd
+dataVMBS = pd.read_csv('https://query1.finance.yahoo.com/v7/finance/download/VMBS?period1=1634610394&period2=1666146394&interval=1d&events=history&includeAdjustedClose=true')
+print (dataVMBS)
+
+dataVMBS['Adj Close'].plot()
+plt.xlabel("Date")
+plt.ylabel("Adjusted")
+plt.title("VMBS Price data")
+plt.show()
+
+VMBS_daily_returns = dataVMBS['Adj Close'].pct_change()
+print (VMBS_daily_returns)
+
+fig = plt.figure()
+ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
+VMBS_daily_returns.plot.hist(bins = 30)
+ax1.set_xlabel("Daily returns %")
+ax1.set_ylabel("Percent")
+ax1.set_title("VMBS daily returns data")
+ax1.text(-0.35,200,"Extreme Low\nreturns")
+ax1.text(0.25,200,"Extreme High\nreturns")
+plt.show()
+
